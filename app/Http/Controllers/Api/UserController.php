@@ -4,15 +4,25 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function index(){
-        $users = User::orderBy('id', 'DESC')->get();
+    public function index() : JsonResponse
+    {
+        $users = User::orderBy('id', 'DESC')->paginate(2);
         return response()->json([
             'status' => true,
             'users' => $users,
         ],200);
+    }
+
+    public function show(User $user) : JsonResponse
+    {
+        return response()->json([
+            'status' => true,
+            'user' => $user,
+        ], 200);
     }
 }
