@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserController extends Controller
 {
@@ -28,7 +30,7 @@ class UserController extends Controller
         ], 200);
     }
 
-    public function store(Request $request)
+    public function store(UserRequest $request)
     {
         DB::beginTransaction();
 
@@ -48,14 +50,10 @@ class UserController extends Controller
                 'mensagem' => "Usuário cadastrado com sucesso",
             ], 201);
 
-        }catch(Exception $e){
+        }catch(QueryException $e){
 
             DB::rollBack(); //não confirmar o registro no banco de dados
-
-            return response()->json([
-                'status' => false,
-                'mensagem' => "Usuário não cadastrado",
-            ], 400);
+            
         }
     }
 }
